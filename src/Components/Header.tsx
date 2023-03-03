@@ -1,16 +1,20 @@
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import {
+  motion,
+  useAnimation,
+  useMotionValueEvent,
+  useScroll,
+} from 'framer-motion';
 import { Link, useMatch } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;
   top: 0;
-  background-color: black;
   font-size: 14px;
   padding: 20px 60px;
   color: white;
@@ -92,23 +96,69 @@ const logoVariants = {
   },
 };
 
+const navVariants = {
+  top: { backgroundColor: 'rgba(0,0,0,0)' },
+  scroll: { backgroundColor: 'rgba(0,0,0,1)' },
+};
+
 function Header() {
   const inputTarget = useRef<HTMLInputElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useMatch('/');
   const tvMatch = useMatch('/tv');
+  const inputAnimation = useAnimation();
+  const navAnimation = useAnimation();
+  const { scrollY } = useScroll();
 
-  const toggleSearch = () => setSearchOpen((prev) => !prev);
-  useEffect(() => {
+  const toggleSearch = () => {
+    //useAnimation을 사용하여 특정 조건에서 애니메이션이 발동하도록 할 수 있음
     if (searchOpen) {
-      return inputTarget.current?.focus();
+      inputAnimation.start({ scaleX: 0 });
+    } else {
+      inputAnimation.start({ scaleX: 1 });
     }
-    document
-      .getElementById('searchInput')
-      ?.addEventListener('blur', () => setSearchOpen(false));
+    setSearchOpen((prev) => !prev);
+  };
+
+  // useAnimation과 함께 썼더니 안먹음.
+  useEffect(() => {
+    if (searchOpen) inputTarget.current?.focus();
+    // const searchInput = document.getElementById('searchInput');
+    // const blurHandler = () => {
+    //   setSearchOpen((prev) => !prev);
+    // };
+    // if (searchInput) {
+    //   inputTarget.current?.blur();
+    //   return searchInput.addEventListener('blur', blurHandler);
+    // }
   }, [searchOpen]);
+
+  //## scrollY.onChange() : onChange가 deprecated되었음.
+  //https://www.framer.com/motion/use-motion-value-event/
+  //"change" events are provided the latest value of the MotionValue.
+
+  useMotionValueEvent(scrollY, 'change', (w) => {
+    if (w > 60) {
+      // navAnimation.start({ backgroundColor: 'rgba(0,0,0,1)' });
+      // variants 이용해서 깔끔하게 리팩토링 가능
+      navAnimation.start('scroll');
+    } else {
+      // navAnimation.start({ backgroundColor: 'rgba(0,0,0,0)' });
+      navAnimation.start('top');
+    }
+  });
+
+  useEffect(() => {
+    // scrollY.onChange(() => console.log(scrollY.get()));
+  }, [scrollY]);
+
   return (
-    <Nav>
+    <Nav
+      variants={navVariants}
+      // 기존 방법 : animate={{backgroundColor: scrollY > 80 ? "" :""}}
+      initial="up"
+      animate={navAnimation}
+    >
       <Col>
         <Logo
           variants={logoVariants}
@@ -149,10 +199,13 @@ function Header() {
             />
           </motion.svg>
           <Input
+            onBlur={() => setSearchOpen(false)}
             id="searchInput"
             ref={inputTarget}
             transition={{ type: 'linear' }}
             initial={{ scaleX: 0 }}
+            // animate={inputAnimation}
+            // blur 이벤트로 변화가 작동하지 않아 useAnimation 사용하지 않도록 변경함.
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             placeholder="Search for movies or tv shows"
           />
