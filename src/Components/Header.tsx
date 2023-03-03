@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link, useMatch } from 'react-router-dom';
+import { useState } from 'react';
 
 const Nav = styled.nav`
   display: flex;
@@ -47,9 +48,34 @@ const Item = styled.li`
 
 const Search = styled.span`
   color: white;
+  display: flex;
+  align-items: center;
+  position: relative;
   svg {
     height: 25px;
   }
+`;
+const Input = styled(motion.input)`
+  //transform이 시작하는 지점 설정 가능
+  /*
+  ## transform-origin CSS 속성은 엘리먼트 transformation의 원점을 설정
+  예시)
+  transform-origin: center;
+  transform-origin: top left;
+  transform-origin: bottom right 60px;
+
+  https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+  */
+  transform-origin: right center;
+  position: absolute;
+  right: 0px;
+  padding: 5px 10px;
+  padding-left: 40px;
+  z-index: -1;
+  color: white;
+  font-size: 16px;
+  background-color: transparent;
+  border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
 const UnderLine = styled(motion.span)`
@@ -78,11 +104,12 @@ const logoVariants = {
 };
 
 function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   const homeMatch = useMatch('/');
   const tvMatch = useMatch('/tv');
-  //path 일치 여부 반환.
-  console.log(homeMatch, tvMatch);
 
+  const toggleSearch = () => setSearchOpen((prev) => !prev);
   return (
     <Nav>
       <Col>
@@ -110,7 +137,11 @@ function Header() {
       </Col>
       <Col>
         <Search>
-          <svg
+          <motion.svg
+            onClick={toggleSearch}
+            animate={{ x: searchOpen ? -180 : 0 }}
+            // transition에 타입 정해주고 함께 트랜지션하게 묶고 싶은 요소에 같이 넣어주면 묶임
+            transition={{ type: 'linear' }}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -119,8 +150,13 @@ function Header() {
               fillRule="evenodd"
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
               clipRule="evenodd"
-            ></path>
-          </svg>
+            />
+          </motion.svg>
+          <Input
+            transition={{ type: 'linear' }}
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            placeholder="Search for movies or tv shows"
+          />
         </Search>
       </Col>
     </Nav>
