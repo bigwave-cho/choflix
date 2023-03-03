@@ -111,7 +111,6 @@ function Header() {
   const { scrollY } = useScroll();
 
   const toggleSearch = () => {
-    //useAnimation을 사용하여 특정 조건에서 애니메이션이 발동하도록 할 수 있음
     if (searchOpen) {
       inputAnimation.start({ scaleX: 0 });
     } else {
@@ -120,45 +119,22 @@ function Header() {
     setSearchOpen((prev) => !prev);
   };
 
-  // useAnimation과 함께 썼더니 안먹음.
   useEffect(() => {
     if (searchOpen) inputTarget.current?.focus();
-    // const searchInput = document.getElementById('searchInput');
-    // const blurHandler = () => {
-    //   setSearchOpen((prev) => !prev);
-    // };
-    // if (searchInput) {
-    //   inputTarget.current?.blur();
-    //   return searchInput.addEventListener('blur', blurHandler);
-    // }
   }, [searchOpen]);
-
-  //## scrollY.onChange() : onChange가 deprecated되었음.
-  //https://www.framer.com/motion/use-motion-value-event/
-  //"change" events are provided the latest value of the MotionValue.
 
   useMotionValueEvent(scrollY, 'change', (w) => {
     if (w > 60) {
-      // navAnimation.start({ backgroundColor: 'rgba(0,0,0,1)' });
-      // variants 이용해서 깔끔하게 리팩토링 가능
       navAnimation.start('scroll');
     } else {
-      // navAnimation.start({ backgroundColor: 'rgba(0,0,0,0)' });
       navAnimation.start('top');
     }
   });
 
-  useEffect(() => {
-    // scrollY.onChange(() => console.log(scrollY.get()));
-  }, [scrollY]);
+  useEffect(() => {}, [scrollY]);
 
   return (
-    <Nav
-      variants={navVariants}
-      // 기존 방법 : animate={{backgroundColor: scrollY > 80 ? "" :""}}
-      initial="up"
-      animate={navAnimation}
-    >
+    <Nav variants={navVariants} initial="up" animate={navAnimation}>
       <Col>
         <Logo
           variants={logoVariants}
@@ -204,8 +180,6 @@ function Header() {
             ref={inputTarget}
             transition={{ type: 'linear' }}
             initial={{ scaleX: 0 }}
-            // animate={inputAnimation}
-            // blur 이벤트로 변화가 작동하지 않아 useAnimation 사용하지 않도록 변경함.
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             placeholder="Search for movies or tv shows"
           />
