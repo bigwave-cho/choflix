@@ -1,16 +1,57 @@
 import { useQuery } from 'react-query';
-import { getMoives } from '../api';
+import styled from 'styled-components';
+import { getMoives, IGetMoviesResult } from '../api';
+import { makeImagePath } from '../utills';
+
+const Wrapper = styled.div`
+  background-color: black;
+`;
+const Loader = styled.div`
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Banner = styled.div<{ bgPhoto: string }>`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  // linear-gradien를 이용해 background img에 그림자 덮어주기
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+    url(${(props) => props.bgPhoto});
+  background-size: cover;
+`;
+const Title = styled.h2`
+  font-size: 68px;
+  margin-bottom: 10px;
+`;
+const Overview = styled.p`
+  font-size: 26px;
+  width: 50%;
+`;
 
 function Home() {
-  //useQuery(식별키, )
-  //식별키는 string || array
-
-  // ## 이미지 path만 주는데 어떻게 받아오는지 문서 설명.
-  //https://developers.themoviedb.org/3/getting-started/images
-  const { data, isLoading } = useQuery(['movies', 'nowPlaying'], getMoives);
+  const { data, isLoading } = useQuery<IGetMoviesResult>(
+    ['movies', 'nowPlaying'],
+    getMoives
+  );
   console.log(data, isLoading);
   return (
-    <div style={{ backgroundColor: 'whitesmoke', height: '200vh' }}>HOME</div>
+    <Wrapper>
+      {isLoading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}>
+            <Title>{data?.results[0].title}</Title>
+            <Overview>{data?.results[0].overview}</Overview>
+          </Banner>
+        </>
+      )}
+    </Wrapper>
   );
 }
 export default Home;
