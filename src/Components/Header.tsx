@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link, useMatch } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Nav = styled.nav`
   display: flex;
@@ -56,16 +56,6 @@ const Search = styled.span`
   }
 `;
 const Input = styled(motion.input)`
-  //transform이 시작하는 지점 설정 가능
-  /*
-  ## transform-origin CSS 속성은 엘리먼트 transformation의 원점을 설정
-  예시)
-  transform-origin: center;
-  transform-origin: top left;
-  transform-origin: bottom right 60px;
-
-  https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-  */
   transform-origin: right center;
   position: absolute;
   right: 0px;
@@ -82,7 +72,6 @@ const UnderLine = styled(motion.span)`
   position: absolute;
   height: 2px;
   bottom: -5px;
-  // 정중앙에 두는 꿀팁
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -104,12 +93,20 @@ const logoVariants = {
 };
 
 function Header() {
+  const inputTarget = useRef<HTMLInputElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
-
   const homeMatch = useMatch('/');
   const tvMatch = useMatch('/tv');
 
   const toggleSearch = () => setSearchOpen((prev) => !prev);
+  useEffect(() => {
+    if (searchOpen) {
+      return inputTarget.current?.focus();
+    }
+    document
+      .getElementById('searchInput')
+      ?.addEventListener('blur', () => setSearchOpen(false));
+  }, [searchOpen]);
   return (
     <Nav>
       <Col>
@@ -140,7 +137,6 @@ function Header() {
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: searchOpen ? -180 : 0 }}
-            // transition에 타입 정해주고 함께 트랜지션하게 묶고 싶은 요소에 같이 넣어주면 묶임
             transition={{ type: 'linear' }}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -153,7 +149,10 @@ function Header() {
             />
           </motion.svg>
           <Input
+            id="searchInput"
+            ref={inputTarget}
             transition={{ type: 'linear' }}
+            initial={{ scaleX: 0 }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             placeholder="Search for movies or tv shows"
           />
