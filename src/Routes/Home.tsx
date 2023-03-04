@@ -55,7 +55,6 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   font-size: 64px;
-  // 첫 박스와 마지막 박스 scale시 잘림 방지
   &:first-child {
     transform-origin: center left;
   }
@@ -63,6 +62,21 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
     transform-origin: center right;
   }
 `;
+
+const Info = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
+`;
+
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -83,6 +97,16 @@ const BoxVariants = {
   hover: {
     scale: 1.3,
     y: -50,
+    transition: { delay: 0.5, type: 'tween', duration: 0.2 },
+  },
+  e: {
+    scale: 5,
+  },
+};
+
+const infoVariants = {
+  hover: {
+    opacity: 1,
     transition: { delay: 0.5, type: 'tween', duration: 0.2 },
   },
 };
@@ -142,7 +166,16 @@ function Home() {
                       whileHover={'hover'}
                       bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
                       transition={{ type: 'tween' }}
-                    ></Box>
+                    >
+                      <Info
+                        variants={infoVariants}
+                        // 부모의 variants는 기본적으로 자식에게 상속되는중.
+                        // whileHover="hover" 이 있는 상태이기 때문에 안적어줘도 작동하며
+                        // infoVariants에 같은 키로 프로퍼티를 만드는 이유
+                      >
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
               </Row>
             </AnimatePresence>
