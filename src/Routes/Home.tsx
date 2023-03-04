@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useMatch, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getMoives, IGetMoviesResult } from '../api';
 import { makeImagePath } from '../utills';
@@ -55,6 +56,7 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   font-size: 64px;
+  cursor: pointer;
   &:first-child {
     transform-origin: center left;
   }
@@ -114,6 +116,8 @@ const infoVariants = {
 const offset = 6;
 
 function Home() {
+  const navigate = useNavigate();
+  const bigMovieMatch = useMatch('/movies/:movieId');
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ['movies', 'nowPlaying'],
     getMoives
@@ -130,7 +134,9 @@ function Home() {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
-
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
   return (
     <Wrapper>
       {isLoading ? (
@@ -160,19 +166,16 @@ function Home() {
                   .slice(offset * index, offset * index + 6)
                   .map((movie) => (
                     <Box
+                      layoutId={movie.id + ''}
                       key={movie.id}
                       variants={BoxVariants}
                       initial="normal"
                       whileHover={'hover'}
                       bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
                       transition={{ type: 'tween' }}
+                      onClick={() => onBoxClicked(movie.id)}
                     >
-                      <Info
-                        variants={infoVariants}
-                        // 부모의 variants는 기본적으로 자식에게 상속되는중.
-                        // whileHover="hover" 이 있는 상태이기 때문에 안적어줘도 작동하며
-                        // infoVariants에 같은 키로 프로퍼티를 만드는 이유
-                      >
+                      <Info variants={infoVariants}>
                         <h4>{movie.title}</h4>
                       </Info>
                     </Box>
@@ -180,6 +183,23 @@ function Home() {
               </Row>
             </AnimatePresence>
           </Slider>
+          <AnimatePresence>
+            {bigMovieMatch && (
+              <motion.div
+                layoutId={bigMovieMatch.params.movieId}
+                style={{
+                  position: 'absolute',
+                  width: '40vw',
+                  height: '80vh',
+                  backgroundColor: 'red',
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  margin: '0 auto',
+                }}
+              ></motion.div>
+            )}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>
