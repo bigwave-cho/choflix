@@ -7,6 +7,7 @@ import { makeImagePath } from '../utills';
 
 const Wrapper = styled.div`
   background-color: black;
+  padding-bottom: 200px;
 `;
 const Loader = styled.div`
   height: 20vh;
@@ -42,28 +43,33 @@ const Slider = styled.div`
 
 const Row = styled(motion.div)`
   display: grid;
-  gap: 10px;
+  gap: 5px;
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
   width: 100%;
 `;
-const Box = styled(motion.div)`
+const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-color: white;
   height: 200px;
-  color: red;
+  // bg 속성
+  background-image: url(${(props) => props.bgPhoto});
+  background-size: cover;
+  background-position: center center;
   font-size: 64px;
 `;
 const rowVariants = {
   hidden: {
-    x: window.outerWidth + 10, // 브라우저 width 적용
+    x: window.outerWidth + 5,
   },
   visible: {
     x: 0,
   },
   exit: {
-    x: -window.outerWidth - 10,
+    x: -window.outerWidth - 5,
   },
 };
+
+const offset = 6;
 
 function Home() {
   const { data, isLoading } = useQuery<IGetMoviesResult>(
@@ -71,7 +77,18 @@ function Home() {
     getMoives
   );
   const [index, setIndex] = useState(0);
-  const increaseIndex = () => setIndex((prev) => prev + 1);
+  const [leaving, setLeaving] = useState(false);
+  const increaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+  const toggleLeaving = () => setLeaving((prev) => !prev);
+
   return (
     <Wrapper>
       {isLoading ? (
@@ -88,7 +105,11 @@ function Home() {
 
           <Slider>
             <AnimatePresence
-            //AnimatePresence : 컴포넌트 생성, 소멸 시 효과 적용 가능
+              // AnimatePresence에 initial false를 주면 첫 렌더링 때 initial 속성이 적용되지 않아서
+              // animate 상태로 컴포넌트가 보여짐.
+              initial={false}
+              // onExitComplete: 애니메이션이 끝날 때 콜백함수 실행.
+              onExitComplete={toggleLeaving}
             >
               <Row
                 variants={rowVariants}
@@ -96,13 +117,17 @@ function Home() {
                 animate="visible"
                 exit="exit"
                 key={index}
-                // key가 바뀌면 react는 컴포넌트가 다른 것으로 대체되었다고 판단
-                //AnimatePresence가 컴포넌트의 라이프사이클을 감지하여 애니메이트함
                 transition={{ type: 'tween', duration: 1 }}
               >
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Box key={i}>{i}</Box>
-                ))}
+                {data?.results
+                  .slice(1)
+                  .slice(offset * index, offset * index + 6)
+                  .map((movie) => (
+                    <Box
+                      key={movie.id}
+                      bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+                    ></Box>
+                  ))}
               </Row>
             </AnimatePresence>
           </Slider>
