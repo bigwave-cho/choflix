@@ -22,7 +22,6 @@ const Banner = styled.div<{ bgPhoto: string }>`
   flex-direction: column;
   justify-content: center;
   padding: 60px;
-  // linear-gradien를 이용해 background img에 그림자 덮어주기
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgPhoto});
   background-size: cover;
@@ -56,6 +55,13 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   font-size: 64px;
+  // 첫 박스와 마지막 박스 scale시 잘림 방지
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
 `;
 const rowVariants = {
   hidden: {
@@ -66,6 +72,18 @@ const rowVariants = {
   },
   exit: {
     x: -window.outerWidth - 5,
+  },
+};
+
+const BoxVariants = {
+  // 바로 옆 박스끼리 간섭이 생겼기 때문에 hover시에만 delay 속성을 추가
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    transition: { delay: 0.5, type: 'tween', duration: 0.2 },
   },
 };
 
@@ -104,13 +122,7 @@ function Home() {
           </Banner>
 
           <Slider>
-            <AnimatePresence
-              // AnimatePresence에 initial false를 주면 첫 렌더링 때 initial 속성이 적용되지 않아서
-              // animate 상태로 컴포넌트가 보여짐.
-              initial={false}
-              // onExitComplete: 애니메이션이 끝날 때 콜백함수 실행.
-              onExitComplete={toggleLeaving}
-            >
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
                 initial="hidden"
@@ -125,7 +137,11 @@ function Home() {
                   .map((movie) => (
                     <Box
                       key={movie.id}
+                      variants={BoxVariants}
+                      initial="normal"
+                      whileHover={'hover'}
                       bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+                      transition={{ type: 'tween' }}
                     ></Box>
                   ))}
               </Row>
