@@ -89,16 +89,37 @@ const Overlay = styled(motion.div)`
 `;
 
 const BigMovie = styled(motion.div)`
-  // bigMovie가 화면 위쪽으로 위치하여 스크롤업해서 봐야하는데
-  // 간단하게는 position을 fixed로 놓아도 됨.
-  //하지만 scroll height를 이용하는 것이 장기적으로 더 다양하게 쓰일 수 있기 때문에
-  // 그것을 사용해보자
   position: absolute;
   width: 40vw;
   height: 80vh;
   left: 0;
   right: 0;
   margin: 0 auto;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: ${(props) => props.theme.black.lighter};
+`;
+
+const BigCover = styled(motion.div)`
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  height: 400px;
+`;
+
+const BigTitle = styled.h3`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 10px;
+  font-size: 46px;
+  position: relative;
+  top: -60px;
+`;
+
+const BigOverview = styled.p`
+  padding: 20px;
+  position: relative;
+  top: -60px;
+  color: ${(props) => props.theme.white.lighter};
 `;
 
 const rowVariants = {
@@ -114,7 +135,6 @@ const rowVariants = {
 };
 
 const BoxVariants = {
-  // 바로 옆 박스끼리 간섭이 생겼기 때문에 hover시에만 delay 속성을 추가
   normal: {
     scale: 1,
   },
@@ -165,6 +185,15 @@ function Home() {
     navigate(-1);
   };
 
+  // 이미 가지고 있는 data를 이용해서 modal 내용으로 사용하기. (loading 없이 바로 사용 가능)
+  // 비슷한 예 ) Link에 https://github.com/bigwave-cho/coinchart/commit/0e1aa976ee722038623e4bd13612dc1fd425b89d
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => movie.id + '' === bigMovieMatch.params.movieId
+    );
+
+  console.log(clickedMovie);
   return (
     <Wrapper>
       {isLoading ? (
@@ -220,12 +249,22 @@ function Home() {
                 />
                 <BigMovie
                   layoutId={bigMovieMatch.params.movieId}
-                  // useScroll로 scrollY 값 가져와서 짜잔.
-                  // scrollY.get() 이유는 모션벨류 자체는 number가 아님
-                  // 그래서 get메서드를 이용해서 number 값을 가져와야 함.
                   style={{ top: scrollY.get() + 100 }}
                 >
-                  hello
+                  {clickedMovie && (
+                    <>
+                      <BigCover
+                        style={{
+                          backgroundImage: `linear-gradient(to top,black,transparent), url(${makeImagePath(
+                            clickedMovie.backdrop_path,
+                            'w500'
+                          )})`,
+                        }}
+                      />
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                    </>
+                  )}
                 </BigMovie>
               </>
             ) : null}
