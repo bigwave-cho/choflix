@@ -8,7 +8,6 @@ import {
 import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
 const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
@@ -17,21 +16,33 @@ const Nav = styled(motion.nav)`
   width: 100%;
   top: 0;
   font-size: 14px;
-  padding: 20px 60px;
+  padding: 2rem 6rem;
   color: white;
+
+  @media only screen and (max-width: 560px) {
+    padding: 1rem 1rem;
+  }
 `;
+
 const Col = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const Logo = styled(motion.svg)`
   margin-right: 50px;
-  width: 95px;
-  height: 25px;
+  width: 10rem;
+  height: 1.7rem;
   fill: ${(props) => props.theme.red};
   path {
     stroke-width: 6px;
     stroke: white;
+  }
+
+  @media only screen and (max-width: 560px) {
+    width: 5rem;
+    height: 1rem;
+    margin-right: 10px;
   }
 `;
 const Items = styled.ul`
@@ -56,9 +67,10 @@ const Search = styled(motion.form)`
   display: flex;
   align-items: center;
   position: relative;
-  svg {
-    height: 25px;
-  }
+`;
+
+const SearchIcon = styled(motion.svg)`
+  height: 25px;
 `;
 const Input = styled(motion.input)`
   transform-origin: right center;
@@ -163,7 +175,7 @@ function Header() {
       </Col>
       <Col>
         <Search onSubmit={handleSubmit(onValid)}>
-          <motion.svg
+          <SearchIcon
             onClick={toggleSearch}
             animate={{ x: searchOpen ? -180 : 0 }}
             transition={{ type: 'linear' }}
@@ -176,7 +188,7 @@ function Header() {
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
               clipRule="evenodd"
             />
-          </motion.svg>
+          </SearchIcon>
           <Input
             {...register('keyword', { required: true })}
             onBlur={() => setSearchOpen(false)}

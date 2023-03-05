@@ -68,18 +68,7 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   background-size: cover;
   background-position: center center;
   font-size: 64px;
-  position: relative;
-  /*
-  이번 커밋의 블로커 : 자꾸만 slider 넓이만큼 오른쪽에 여백이 생겨버린다.
-  
-  원인 : Box의 자식 Info 컴포넌트가 position absolute.
-  
-  해결 : absolute로 부모 컴포넌트 중에 position을 명시해준 것이 없기 때문에 body까지 기어올라간 것으로 
-        Box 컴포넌트에 position relative를 부여하여 속.박 시켜버렸다.
-
-  소감 : 이런 간단한 문제를 framer motion 원인인가 생각하여 두시간 넘게 삽질을 하고 있었고 간단히 한 줄의 코드로 
-  해결했을 때 기쁨보다 빡침이 더 밀려옴..
-  */
+  /* position: relative; */
 
   cursor: pointer;
   &:first-child {
@@ -94,7 +83,7 @@ const Info = styled(motion.div)`
   padding: 10px;
   background-color: ${(props) => props.theme.black.lighter};
   opacity: 0;
-  position: absolute;
+  position: fixed;
   width: 100%;
   bottom: 0;
 
