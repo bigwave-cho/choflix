@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { theme } from './theme';
+import { theme } from './styles/theme';
 import { RecoilRoot } from 'recoil';
 import { QueryClient, QueryClientProvider } from 'react-query';
 const GlobalStyle = createGlobalStyle`
@@ -63,7 +63,6 @@ body {
   color:${(props) => props.theme.white.darker};
   line-height: 1.2;
   background-color: black;
-  
 }
 a {
   text-decoration:none;
