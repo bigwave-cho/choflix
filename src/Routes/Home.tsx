@@ -48,10 +48,10 @@ const Row = styled(motion.div)`
   position: absolute;
   width: 100%;
 `;
-const Box = styled(motion.div)<{ bgPhoto: string }>`
+const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
   height: 200px;
-  background-image: url(${(props) => props.bgPhoto});
+  background-image: url(${(props) => props.bgphoto});
   background-size: cover;
   background-position: center center;
   font-size: 64px;
@@ -223,7 +223,7 @@ function Home() {
                       variants={BoxVariants}
                       initial="normal"
                       whileHover={'hover'}
-                      bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+                      bgphoto={makeImagePath(movie.backdrop_path)}
                       transition={{ type: 'tween' }}
                       onClick={() => onBoxClicked(movie.id)}
                     >

@@ -38,7 +38,7 @@ export interface IGetMoviesResult {
 }
 
 export function getMoives() {
-  return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
-    (response) => response.json()
-  );
+  return fetch(
+    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&&language=ko-KR`
+  ).then((response) => response.json());
 }
