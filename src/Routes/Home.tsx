@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useMatch, useNavigate } from 'react-router-dom';
@@ -79,6 +79,28 @@ const Info = styled(motion.div)`
   }
 `;
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+`;
+
+const BigMovie = styled(motion.div)`
+  // bigMovie가 화면 위쪽으로 위치하여 스크롤업해서 봐야하는데
+  // 간단하게는 position을 fixed로 놓아도 됨.
+  //하지만 scroll height를 이용하는 것이 장기적으로 더 다양하게 쓰일 수 있기 때문에
+  // 그것을 사용해보자
+  position: absolute;
+  width: 40vw;
+  height: 80vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+`;
+
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -118,6 +140,7 @@ const offset = 6;
 function Home() {
   const navigate = useNavigate();
   const bigMovieMatch = useMatch('/movies/:movieId');
+  const { scrollY } = useScroll();
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ['movies', 'nowPlaying'],
     getMoives
@@ -137,6 +160,11 @@ function Home() {
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
   };
+
+  const onOverlayClicked = () => {
+    navigate(-1);
+  };
+
   return (
     <Wrapper>
       {isLoading ? (
@@ -150,7 +178,6 @@ function Home() {
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
-
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
@@ -163,7 +190,7 @@ function Home() {
               >
                 {data?.results
                   .slice(1)
-                  .slice(offset * index, offset * index + 6)
+                  .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
                       layoutId={movie.id + ''}
@@ -184,21 +211,24 @@ function Home() {
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
-            {bigMovieMatch && (
-              <motion.div
-                layoutId={bigMovieMatch.params.movieId}
-                style={{
-                  position: 'absolute',
-                  width: '40vw',
-                  height: '80vh',
-                  backgroundColor: 'red',
-                  top: 50,
-                  left: 0,
-                  right: 0,
-                  margin: '0 auto',
-                }}
-              ></motion.div>
-            )}
+            {bigMovieMatch ? (
+              <>
+                <Overlay
+                  onClick={onOverlayClicked}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                />
+                <BigMovie
+                  layoutId={bigMovieMatch.params.movieId}
+                  // useScroll로 scrollY 값 가져와서 짜잔.
+                  // scrollY.get() 이유는 모션벨류 자체는 number가 아님
+                  // 그래서 get메서드를 이용해서 number 값을 가져와야 함.
+                  style={{ top: scrollY.get() + 100 }}
+                >
+                  hello
+                </BigMovie>
+              </>
+            ) : null}
           </AnimatePresence>
         </>
       )}
