@@ -51,7 +51,6 @@ const Row = styled(motion.div)`
 const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-color: white;
   height: 200px;
-  // bg 속성
   background-image: url(${(props) => props.bgPhoto});
   background-size: cover;
   background-position: center center;
@@ -185,15 +184,12 @@ function Home() {
     navigate(-1);
   };
 
-  // 이미 가지고 있는 data를 이용해서 modal 내용으로 사용하기. (loading 없이 바로 사용 가능)
-  // 비슷한 예 ) Link에 https://github.com/bigwave-cho/coinchart/commit/0e1aa976ee722038623e4bd13612dc1fd425b89d
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
     data?.results.find(
       (movie) => movie.id + '' === bigMovieMatch.params.movieId
     );
 
-  console.log(clickedMovie);
   return (
     <Wrapper>
       {isLoading ? (

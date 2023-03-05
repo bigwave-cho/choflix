@@ -5,8 +5,9 @@ import {
   useMotionValueEvent,
   useScroll,
 } from 'framer-motion';
-import { Link, useMatch } from 'react-router-dom';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -50,7 +51,7 @@ const Item = styled.li`
   }
 `;
 
-const Search = styled.span`
+const Search = styled(motion.form)`
   color: white;
   display: flex;
   align-items: center;
@@ -101,6 +102,10 @@ const navVariants = {
   scroll: { backgroundColor: 'rgba(0,0,0,1)' },
 };
 
+interface IForm {
+  keyword: string;
+}
+
 function Header() {
   const inputTarget = useRef<HTMLInputElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -109,19 +114,31 @@ function Header() {
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useScroll();
+  const navigate = useNavigate();
+  const { register, handleSubmit, setFocus } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    navigate(`/search?keyword=${data.keyword}`);
+  };
 
   const toggleSearch = () => {
     if (searchOpen) {
       inputAnimation.start({ scaleX: 0 });
     } else {
       inputAnimation.start({ scaleX: 1 });
+      // ## 블록커 정리
+      // 기존에는 useRef를 이용하여 input창 오픈 시 focus메서드가 발생하도록 하였는데
+      // handleSubmit이 작동하지 않음
+      //console.log(register('keyword')); //{name: 'keyword', onChange: ƒ, onBlur: ƒ, ref: ƒ}
+      // 콘솔로그 찍어보면 이렇게 register는 name, onChange, onBlur, ref 를 반환.
+      // ref를 이용해서 리액트훅폼이 validation을 실행하기 때문에 내가 따로 ref를 부여한 것과
+      // 겹치게 되어서 올바르게 작동하지 않았던 것..!
+      // 참고 https://stef.tistory.com/31?category=952941
+
+      // 대신 리액트폼훅의 setFocus 메서드를 사용하여 해결
+      setFocus('keyword');
     }
     setSearchOpen((prev) => !prev);
   };
-
-  useEffect(() => {
-    if (searchOpen) inputTarget.current?.focus();
-  }, [searchOpen]);
 
   useMotionValueEvent(scrollY, 'change', (w) => {
     if (w > 60) {
@@ -130,8 +147,6 @@ function Header() {
       navAnimation.start('top');
     }
   });
-
-  useEffect(() => {}, [scrollY]);
 
   return (
     <Nav variants={navVariants} initial="up" animate={navAnimation}>
@@ -159,7 +174,7 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: searchOpen ? -180 : 0 }}
@@ -175,9 +190,9 @@ function Header() {
             />
           </motion.svg>
           <Input
+            {...register('keyword', { required: true })}
             onBlur={() => setSearchOpen(false)}
             id="searchInput"
-            ref={inputTarget}
             transition={{ type: 'linear' }}
             initial={{ scaleX: 0 }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
