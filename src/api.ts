@@ -59,9 +59,9 @@ export interface IGetTvResult {
   total_results: number;
 }
 
-export function getTvs() {
+export function getTvs(kind: string) {
   return fetch(
-    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&&language=ko-KR`
+    `${BASE_PATH}/tv/${kind}?api_key=${API_KEY}&&language=ko-KR`
   ).then((response) => response.json());
 }
 

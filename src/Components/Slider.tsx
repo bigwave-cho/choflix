@@ -90,9 +90,10 @@ const Box = styled(motion.div)<{ bgphoto: string; offset: number }>`
 const Info = styled(motion.div)`
   position: relative;
   width: 100%;
-  top: 195px;
+  top: 205px;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
   h4 {
     text-align: center;
     font-size: 1rem;
@@ -206,7 +207,7 @@ export default function Slider({
     uniqueKey: string
   ) => {
     mediaType === 'tv'
-      ? navigate(`/choflix/${menu}/${type}/${id}`)
+      ? navigate(`/choflix/${menu}/${type}/${id}?kind=${uniqueKey}`)
       : navigate(`/choflix/${menu}/${id}/${uniqueKey}`);
   };
   const bigMatch: PathMatch<string> | null = useMatch(

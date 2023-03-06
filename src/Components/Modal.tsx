@@ -87,7 +87,6 @@ export default function Modal({ dataId, listType, requestUrl }: IModal) {
   const onOverlayClicked = () => {
     navigate(-1);
   };
-  console.log(dataId + listType);
   return (
     <>
       <Overlay onClick={onOverlayClicked} />
