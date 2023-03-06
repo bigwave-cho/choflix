@@ -165,10 +165,12 @@ function Banner({
   detailSearchUrl: string;
   requestUrl?: string;
 }) {
-  const bigMatch: PathMatch<string> | null = useMatch(`/:menuName/banner/:id`);
+  const bigMatch: PathMatch<string> | null = useMatch(
+    `/choflix/:menuName/banner/:id`
+  );
   const navigate = useNavigate();
   const onBoxClicked = (id: number) => {
-    navigate(`/${detailSearchUrl}/${id}`);
+    navigate(`/choflix/${detailSearchUrl}/${id}`);
   };
   const bannerBgSize = window.innerWidth < 560 ? 'w500' : '';
   return (

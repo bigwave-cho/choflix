@@ -9,12 +9,22 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/movies/:movieId" element={<Home />} />
-        <Route path="/tv" element={<Tv />} />
-        <Route path="/tv/banner/:tvId" element={<Tv />} />
-        <Route path="/tv/tvShowList/:tvId" element={<Tv />} />
-        <Route path="/search" element={<Search />} />
+        <Route path={`${process.env.PUBLIC_URL}/`} element={<Home />} />
+        <Route
+          path={`${process.env.PUBLIC_URL}/movies/:movieId`}
+          element={<Home />}
+        />
+        <Route path={`${process.env.PUBLIC_URL}/tv`} element={<Tv />} />
+        <Route
+          path={`${process.env.PUBLIC_URL}/tv/banner/:tvId`}
+          element={<Tv />}
+        />
+
+        <Route
+          path={`${process.env.PUBLIC_URL}/tv/tvShowList/:tvId`}
+          element={<Tv />}
+        />
+        <Route path={`${process.env.PUBLIC_URL}/search`} element={<Search />} />
       </Routes>
     </BrowserRouter>
   );

@@ -85,7 +85,7 @@ export interface IDetailInfo {
 
 export function getDetailInfo(id: string, requestType: string) {
   return fetch(
-    `${BASE_PATH}/${requestType}/${id}?api_key=${API_KEY}&&language=ko-KR`
+    `${BASE_PATH}/${requestType}/${id}?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }
 

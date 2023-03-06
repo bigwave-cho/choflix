@@ -278,7 +278,7 @@ const infoVariants = {
 
 function Home() {
   const navigate = useNavigate();
-  const bigMovieMatch = useMatch('/movies/:movieId');
+  const bigMovieMatch = useMatch('/choflix/movies/:movieId');
   const { scrollY } = useScroll();
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ['movies', 'nowPlaying'],
@@ -311,7 +311,7 @@ function Home() {
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+    navigate(`/choflix/movies/${movieId}`);
   };
 
   const onOverlayClicked = () => {

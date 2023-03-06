@@ -121,15 +121,15 @@ interface IForm {
 
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
-  const homeMatch = useMatch('/');
-  const tvMatch = useMatch('/tv');
+  const homeMatch = useMatch('/choflix/');
+  const tvMatch = useMatch('/choflix/tv');
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useScroll();
   const navigate = useNavigate();
   const { register, handleSubmit, setFocus } = useForm<IForm>();
   const onValid = (data: IForm) => {
-    navigate(`/search?keyword=${data.keyword}`);
+    navigate(`/choflix/search?keyword=${data.keyword}`);
   };
 
   const toggleSearch = () => {
@@ -166,11 +166,11 @@ function Header() {
         </Logo>
         <Items>
           <Item>
-            <Link to="/">Home</Link>
+            <Link to="/choflix/">Home</Link>
             {homeMatch && <UnderLine layoutId="UnderLine" />}
           </Item>
           <Item>
-            <Link to={'/tv'}>Tv Shows</Link>
+            <Link to={'/choflix/tv'}>Tv Shows</Link>
             {tvMatch && <UnderLine layoutId="UnderLine" />}
           </Item>
         </Items>

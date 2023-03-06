@@ -11,6 +11,7 @@ import {
   IGetTvResult,
 } from '../api';
 import Banner from '../Components/Banner';
+import Modal from '../Components/Modal';
 import Slider from '../Components/Slider';
 import Slider2 from '../Components/Slider2';
 import { makeImagePath } from '../utills';
@@ -33,14 +34,14 @@ const SliderContainer = styled.div`
   }
 `;
 
-function Home() {
+function Tv() {
   // const navigate = useNavigate();
-  // const bigMovieMatch = useMatch('/tv/:tvId');
+  const bigMovieMatch = useMatch('/choflix/tv/tvShowList/:tvId');
   const { data: popularTvShows, isLoading } = useQuery<IGetTvResult>(
     ['tvs', 'popular'],
     getTvs
   );
-
+  console.log(bigMovieMatch?.params.tvId);
   return (
     <Wrapper>
       {isLoading ? (
@@ -68,9 +69,16 @@ function Home() {
               mediaType="tv"
             /> */}
           </SliderContainer>
+          {bigMovieMatch && (
+            <Modal
+              dataId={+bigMovieMatch?.params.tvId!}
+              listType="tvShowList"
+              requestUrl="tv"
+            ></Modal>
+          )}
         </>
       )}
     </Wrapper>
   );
 }
-export default Home;
+export default Tv;

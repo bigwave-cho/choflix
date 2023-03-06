@@ -57,7 +57,7 @@ function Search() {
     () => getSearchList(keyword || '')
   );
   const onClick = (id: string, media_type: string) => {
-    navigate(`/search?keyword=${keyword}&id=${id}&type=${media_type}`);
+    navigate(`/choflix/search?keyword=${keyword}&id=${id}&type=${media_type}`);
   };
   isLoading && <div>Loading...</div>;
   return (

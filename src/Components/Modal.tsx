@@ -87,6 +87,7 @@ export default function Modal({ dataId, listType, requestUrl }: IModal) {
   const onOverlayClicked = () => {
     navigate(-1);
   };
+
   return (
     <>
       <Overlay onClick={onOverlayClicked} />
@@ -105,7 +106,7 @@ export default function Modal({ dataId, listType, requestUrl }: IModal) {
           <div>
             <span>{data?.first_air_date || ''}</span>
             <span style={{ marginLeft: '15px' }}>
-              {/* {data?.genres[0].name || ''} */}
+              {data?.genres[0].name || ''}
             </span>
             <span style={{ marginLeft: '15px' }}>{`평점: ${
               data?.vote_average || '정보 없음'

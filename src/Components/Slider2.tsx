@@ -221,7 +221,7 @@ export default function Slider2({
 
   const navigate = useNavigate();
   const onBoxClicked = (menu: string, type: string, id: number) => {
-    navigate(`/${menu}/${type}/${id}`);
+    navigate(`/choflix/${menu}/${type}/${id}`);
   };
   const bigMatch: PathMatch<string> | null = useMatch(
     `/${menuName}/${listType}/:id`
