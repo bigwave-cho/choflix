@@ -23,6 +23,10 @@ function App() {
           path={`${process.env.PUBLIC_URL}/movies/:movieId`}
           element={<Home />}
         />
+        <Route
+          path={`${process.env.PUBLIC_URL}/banner/:movieId`}
+          element={<Home />}
+        />
         <Route path={`${process.env.PUBLIC_URL}/tv`} element={<Tv />} />
         <Route
           path={`${process.env.PUBLIC_URL}/tv/banner/:tvId`}

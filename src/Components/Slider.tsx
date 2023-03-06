@@ -32,8 +32,8 @@ const ArrowBtn = styled(motion.div)<{ mobile: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 6rem;
-  height: 6rem;
+  width: 4rem;
+  height: 4rem;
   color: #fff;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -104,7 +104,6 @@ const Info = styled(motion.div)`
   top: 195px;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.5);
-  /* opacity: 0; */
   h4 {
     text-align: center;
     font-size: 1rem;
@@ -167,7 +166,6 @@ export default function Slider({
   menuName,
   mediaType,
 }: ISliderProps) {
-  const mobile = isMobile ? 1 : 0;
   const offset = useRecoilValue(slideCnt);
   const [isRight, setIsRight] = useState(1);
   const [index, setIndex] = useState(0);
@@ -195,7 +193,6 @@ export default function Slider({
     }
   };
 
-  //resize로 인해 index의 값이 엄청 커진상태에서 offset개수가 많아지면 값이 안맞는 현상 막기위해 재연산처리추가
   useEffect(() => {
     if (data) {
       const dataTotalLen = data.results.length;

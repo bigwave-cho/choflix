@@ -55,7 +55,7 @@ function Tv() {
               dataId={+bigMovieMatch?.params.tvId!}
               listType="tvShowList"
               requestUrl="tv"
-            ></Modal>
+            />
           )}
         </>
       )}

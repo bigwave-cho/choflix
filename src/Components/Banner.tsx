@@ -162,7 +162,7 @@ function Banner({
   requestUrl,
 }: {
   bannerInfo: IData;
-  detailSearchUrl: string;
+  detailSearchUrl?: string;
   requestUrl?: string;
 }) {
   const bigMatch: PathMatch<string> | null = useMatch(
@@ -180,14 +180,16 @@ function Banner({
       <Title>{bannerInfo.title ? bannerInfo.title : bannerInfo.name}</Title>
       <Overview>{bannerInfo.overview}</Overview>
       <ButtonArea>
-        <DetailInfoBtn
-          color={'#fff'}
-          bgcolor={'rgba(109, 109, 110, 0.7)'}
-          hovercolor={'rgba(109, 109, 110, 0.4)'}
-          onClick={() => onBoxClicked(bannerInfo.id)}
-        >
-          <BtnText>상세 정보</BtnText>
-        </DetailInfoBtn>
+        {detailSearchUrl !== 'home' && (
+          <DetailInfoBtn
+            color={'#fff'}
+            bgcolor={'rgba(109, 109, 110, 0.7)'}
+            hovercolor={'rgba(109, 109, 110, 0.4)'}
+            onClick={() => onBoxClicked(bannerInfo.id)}
+          >
+            <BtnText>상세 정보</BtnText>
+          </DetailInfoBtn>
+        )}
       </ButtonArea>
       <AnimatePresence>
         {bigMatch ? (
