@@ -1,20 +1,10 @@
-import { motion, AnimatePresence, useScroll } from 'framer-motion';
-import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useMatch, useNavigate } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  getMoives,
-  getTvs,
-  IData,
-  IGetMoviesResult,
-  IGetTvResult,
-} from '../api';
+import { getTvs, IData, IGetTvResult } from '../api';
 import Banner from '../Components/Banner';
 import Modal from '../Components/Modal';
 import Slider from '../Components/Slider';
-import Slider2 from '../Components/Slider2';
-import { makeImagePath } from '../utills';
 
 const Wrapper = styled.div``;
 
@@ -35,13 +25,11 @@ const SliderContainer = styled.div`
 `;
 
 function Tv() {
-  // const navigate = useNavigate();
   const bigMovieMatch = useMatch('/choflix/tv/tvShowList/:tvId');
   const { data: popularTvShows, isLoading } = useQuery<IGetTvResult>(
     ['tvs', 'popular'],
     getTvs
   );
-  console.log(bigMovieMatch?.params.tvId);
   return (
     <Wrapper>
       {isLoading ? (
@@ -61,13 +49,6 @@ function Tv() {
               menuName="tv"
               mediaType="tv"
             />
-            {/* <Slider2
-              data={popularTvShows!}
-              title={'Popular Tv Shows'}
-              listType={'tvShowList'}
-              menuName="tv"
-              mediaType="tv"
-            /> */}
           </SliderContainer>
           {bigMovieMatch && (
             <Modal

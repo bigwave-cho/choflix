@@ -13,6 +13,9 @@ const Wrapper = styled(motion.div)`
   position: relative;
   min-height: 250px;
   overflow: hidden;
+  :hover .arrow {
+    opacity: 1;
+  }
 `;
 
 const SliderTitle = styled.p`
@@ -34,7 +37,7 @@ const ArrowBtn = styled(motion.div)<{ mobile: number }>`
   color: #fff;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
+  opacity: 0;
   transition: all 0.3s;
   z-index: 90;
   cursor: pointer;
@@ -112,7 +115,6 @@ const Info = styled(motion.div)`
 
 const rowVariants = {
   hidden: (right: number) => {
-    console.log('hidden', right);
     return {
       x: right === 1 ? window.innerWidth + 5 : -window.innerWidth - 5,
     };
@@ -122,7 +124,6 @@ const rowVariants = {
     y: 0,
   },
   exit: (right: number) => {
-    console.log('exit', right);
     return {
       x: right === 1 ? -window.innerWidth - 5 : window.innerWidth + 5,
     };
@@ -233,7 +234,6 @@ export default function Slider({
       changeIndex(right);
     }
   };
-  /////
   return (
     <Wrapper>
       <SliderTitle>{title}</SliderTitle>
@@ -250,6 +250,7 @@ export default function Slider({
       <AnimatePresence
         initial={false}
         onExitComplete={() => toggleLeaving(false)}
+        custom={isRight}
       >
         <Row {...rowProps}>
           {data?.results
@@ -262,7 +263,7 @@ export default function Slider({
                   style={{ color: 'black' }}
                   initial="normal"
                   whileHover="hover"
-                  transition={{ type: 'tweent', duration: 1 }}
+                  transition={{ type: 'tweent' }}
                   layoutId={item.id + listType}
                   bgphoto={makeImagePath(item.backdrop_path || '', 'w500')}
                   offset={offset}

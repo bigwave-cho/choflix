@@ -1,10 +1,19 @@
+import { useEffect } from 'react';
 import { Routes, BrowserRouter, Route } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import Header from './Components/Header';
 import Home from './Routes/Home';
 import Search from './Routes/Search';
 import Tv from './Routes/Tv';
+import { windowWidth } from './atoms';
 
 function App() {
+  const [, setWidth] = useRecoilState(windowWidth);
+  useEffect(() => {
+    const debouncedResizeHandler = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', debouncedResizeHandler);
+    return () => window.removeEventListener('resize', debouncedResizeHandler);
+  }, []);
   return (
     <BrowserRouter>
       <Header />
