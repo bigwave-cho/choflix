@@ -13,6 +13,7 @@ const Wrapper = styled(motion.div)`
   position: relative;
   min-height: 250px;
   top: -150px;
+  margin-bottom: 50px;
   :hover .arrow {
     opacity: 1;
   }
@@ -37,7 +38,7 @@ const ArrowBtn = styled(motion.div)<{ mobile: number }>`
   color: #fff;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
+  opacity: ${isMobile ? 1 : 0};
   transition: all 0.3s;
   z-index: 90;
   cursor: pointer;
@@ -145,6 +146,7 @@ interface ISliderProps {
   listType: string;
   menuName: string;
   mediaType: string;
+  uniqueKey: string;
 }
 
 export default function Slider({
@@ -153,6 +155,7 @@ export default function Slider({
   listType,
   menuName,
   mediaType,
+  uniqueKey,
 }: ISliderProps) {
   const offset = useRecoilValue(slideCnt);
   const [isRight, setIsRight] = useState(1);
@@ -196,10 +199,15 @@ export default function Slider({
   }, [offset, data, index, setIndex]);
 
   const navigate = useNavigate();
-  const onBoxClicked = (menu: string, type: string, id: number) => {
+  const onBoxClicked = (
+    menu: string,
+    type: string,
+    id: number,
+    uniqueKey: string
+  ) => {
     mediaType === 'tv'
       ? navigate(`/choflix/${menu}/${type}/${id}`)
-      : navigate(`/choflix/${menu}/${id}`);
+      : navigate(`/choflix/${menu}/${id}/${uniqueKey}`);
   };
   const bigMatch: PathMatch<string> | null = useMatch(
     `/${menuName}/${listType}/:id`
@@ -263,11 +271,11 @@ export default function Slider({
                   initial="normal"
                   whileHover="hover"
                   transition={{ type: 'tweent' }}
-                  layoutId={item.id + listType}
+                  layoutId={item.id + listType + uniqueKey}
                   bgphoto={makeImagePath(item.backdrop_path || '', 'w500')}
                   offset={offset}
                   onClick={() => {
-                    onBoxClicked(menuName, listType, item.id);
+                    onBoxClicked(menuName, listType, item.id, uniqueKey);
                   }}
                 >
                   <Info variants={infoVariants}>

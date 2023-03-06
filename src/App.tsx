@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path={`${process.env.PUBLIC_URL}/`} element={<Home />} />
         <Route
-          path={`${process.env.PUBLIC_URL}/movies/:movieId`}
+          path={`${process.env.PUBLIC_URL}/movies/:movieId/:kind`}
           element={<Home />}
         />
         <Route

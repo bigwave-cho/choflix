@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getDetailInfo, IData, IDetailInfo } from '../api';
+import { getDetailInfo, IDetailInfo } from '../api';
 import { makeImagePath } from '../utills';
 
 const Overlay = styled(motion.div)`
@@ -87,6 +87,7 @@ export default function Modal({ dataId, listType, requestUrl }: IModal) {
   const onOverlayClicked = () => {
     navigate(-1);
   };
+  console.log(dataId + listType);
   return (
     <>
       <Overlay onClick={onOverlayClicked} />

@@ -37,9 +37,9 @@ export interface IGetMoviesResult {
   total_results: number;
 }
 
-export function getMoives() {
+export function getMoives(kind: string) {
   return fetch(
-    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&&language=ko-KR`
+    `${BASE_PATH}/movie/${kind}?api_key=${API_KEY}&&language=ko-KR`
   ).then((response) => response.json());
 }
 

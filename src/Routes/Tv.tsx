@@ -48,6 +48,7 @@ function Tv() {
               listType={'tvShowList'}
               menuName="tv"
               mediaType="tv"
+              uniqueKey="popular"
             />
           </SliderContainer>
           {bigMovieMatch && (
