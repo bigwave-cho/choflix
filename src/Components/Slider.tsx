@@ -12,7 +12,7 @@ import Modal from './Modal';
 const Wrapper = styled(motion.div)`
   position: relative;
   min-height: 250px;
-  overflow: hidden;
+  top: -150px;
   :hover .arrow {
     opacity: 1;
   }
@@ -37,7 +37,7 @@ const ArrowBtn = styled(motion.div)<{ mobile: number }>`
   color: #fff;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
+  opacity: 1;
   transition: all 0.3s;
   z-index: 90;
   cursor: pointer;
@@ -49,26 +49,14 @@ const ArrowBtn = styled(motion.div)<{ mobile: number }>`
     color: #fff;
     background-color: #000;
   }
-  svg {
-    width: 2.8rem;
-    height: 2.8rem;
-  }
-  @media only screen and (max-width: 500px) {
-    width: 5rem;
-    height: 5rem;
-    svg {
-      width: 2rem;
-      height: 2rem;
-    }
-  }
 `;
 
 const LeftArrowBtn = styled(ArrowBtn)`
-  left: 0;
+  left: 10px;
 `;
 
 const RightArrowBtn = styled(ArrowBtn)`
-  right: 0;
+  right: 10px;
 `;
 
 const Row = styled(motion.div)<{ gridcnt: number }>`
@@ -209,7 +197,9 @@ export default function Slider({
 
   const navigate = useNavigate();
   const onBoxClicked = (menu: string, type: string, id: number) => {
-    navigate(`/choflix/${menu}/${type}/${id}`);
+    mediaType === 'tv'
+      ? navigate(`/choflix/${menu}/${type}/${id}`)
+      : navigate(`/choflix/${menu}/${id}`);
   };
   const bigMatch: PathMatch<string> | null = useMatch(
     `/${menuName}/${listType}/:id`
@@ -238,12 +228,24 @@ export default function Slider({
         mobile={isMobile ? 1 : 0}
         className="arrow"
         onClick={() => onClickToArrowBtn(-1)}
-      ></LeftArrowBtn>
+      >
+        <i
+          className={`fa-solid fa-arrow-left ${
+            window.innerWidth > 560 ? 'fa-2xl' : ''
+          }`}
+        ></i>
+      </LeftArrowBtn>
       <RightArrowBtn
         mobile={isMobile ? 1 : 0}
         className="arrow"
         onClick={() => onClickToArrowBtn(1)}
-      ></RightArrowBtn>
+      >
+        <i
+          className={`fa-solid fa-arrow-right ${
+            window.innerWidth > 560 ? 'fa-2xl' : ''
+          }`}
+        ></i>
+      </RightArrowBtn>
       <AnimatePresence
         initial={false}
         onExitComplete={() => toggleLeaving(false)}

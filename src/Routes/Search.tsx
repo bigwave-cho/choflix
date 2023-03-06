@@ -63,7 +63,6 @@ function Search() {
   return (
     <Wrapper>
       {data?.results.map((item) => {
-        console.log('a', item.id + 'searchItem');
         return (
           <Box
             layoutId={item.id + 'searchItem'}

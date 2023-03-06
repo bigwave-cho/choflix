@@ -18,21 +18,14 @@ const Wrapper = styled.div<{ bgphoto: string }>`
   background-size: 100%;
   background-position: center center;
 
-  @media screen and (max-width: 1500px) {
-    height: 85%;
-  }
   @media screen and (max-width: 1400px) {
     height: 80%;
   }
-  @media screen and (max-width: 1300px) {
-    height: 85%;
-  }
+
   @media screen and (max-width: 1200px) {
     height: 80%;
   }
-  @media screen and (max-width: 1100px) {
-    height: 70%;
-  }
+
   @media screen and (max-width: 1000px) {
     height: 65%;
     min-height: 64.8rem;
@@ -48,9 +41,6 @@ const Wrapper = styled.div<{ bgphoto: string }>`
   }
   @media screen and (min-width: 216px) {
     background-position: center top;
-  }
-  @media screen and (min-width: 1680px) {
-    background-position: center center;
   }
 `;
 

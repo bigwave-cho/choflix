@@ -87,7 +87,6 @@ export default function SearchModal({ dataId, listType, requestUrl }: IModal) {
   const onOverlayClicked = () => {
     navigate(-1);
   };
-  console.log('b', dataId + listType);
   return (
     <AnimatePresence>
       <Overlay onClick={onOverlayClicked} />
