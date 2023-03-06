@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/choflix/static/js/main.ea07bd87.js",
+    "main.js": "/choflix/static/js/main.5c2fb5ee.js",
     "index.html": "/choflix/index.html",
-    "main.ea07bd87.js.map": "/choflix/static/js/main.ea07bd87.js.map"
+    "main.5c2fb5ee.js.map": "/choflix/static/js/main.5c2fb5ee.js.map"
   },
   "entrypoints": [
-    "static/js/main.ea07bd87.js"
+    "static/js/main.5c2fb5ee.js"
   ]
 }
