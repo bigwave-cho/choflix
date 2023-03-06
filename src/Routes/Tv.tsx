@@ -1,148 +1,76 @@
-import { motion, MotionStyle, MotionValue, PanInfo } from 'framer-motion';
-import * as React from 'react';
-import { animate, AnimationOptions, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useScroll } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { useMatch, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import {
+  getMoives,
+  getTvs,
+  IData,
+  IGetMoviesResult,
+  IGetTvResult,
+} from '../api';
+import Banner from '../Components/Banner';
+import Slider from '../Components/Slider';
+import Slider2 from '../Components/Slider2';
+import { makeImagePath } from '../utills';
 
-interface PageProps {
-  index: number;
-  renderPage: (props: { index: number }) => JSX.Element;
-  x: MotionValue;
-  onDragEnd(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void;
-}
+const Wrapper = styled.div``;
 
-const pageStyle: MotionStyle = {
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-};
+const Loader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+`;
 
-const Page: React.FunctionComponent<PageProps> = ({
-  index,
-  renderPage,
-  x,
-  onDragEnd,
-}) => {
-  const child = React.useMemo(() => renderPage({ index }), [index, renderPage]);
+const SliderContainer = styled.div`
+  background-color: transparent;
+  position: relative;
+  top: -200px;
+  @media screen and (max-width: 1000px) {
+    top: -150px;
+  }
+`;
 
-  return (
-    <motion.div
-      style={{
-        ...pageStyle,
-        x,
-        left: `${index * 100}%`,
-        right: `${index * 100}%`,
-      }}
-      draggable
-      drag="x"
-      dragElastic={1}
-      onDragEnd={onDragEnd}
-    >
-      {child}
-    </motion.div>
+function Home() {
+  // const navigate = useNavigate();
+  // const bigMovieMatch = useMatch('/tv/:tvId');
+  const { data: popularTvShows, isLoading } = useQuery<IGetTvResult>(
+    ['tvs', 'popular'],
+    getTvs
   );
-};
-
-Page.displayName = 'page';
-
-const range = [-1, 0, 1];
-
-interface VirtualizedPageProps {
-  children: (props: { index: number }) => JSX.Element;
-}
-
-const containerStyle: MotionStyle = {
-  position: 'relative',
-  width: '100%',
-  height: '100%',
-  overflowX: 'hidden',
-};
-
-const transition: AnimationOptions<any> = {
-  type: 'spring',
-  bounce: 0,
-};
-
-const VirtualizedPage: React.FunctionComponent<VirtualizedPageProps> = ({
-  children,
-}) => {
-  const x = useMotionValue(0);
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const [index, setIndex] = React.useState(0);
-
-  const calculateNewX = () => -index * (containerRef.current?.clientWidth || 0);
-
-  const handleEndDrag = (e: Event, dragProps: PanInfo) => {
-    const clientWidth = containerRef.current?.clientWidth || 0;
-
-    const { offset, velocity } = dragProps;
-
-    if (Math.abs(velocity.y) > Math.abs(velocity.x)) {
-      animate(x, calculateNewX(), transition);
-      return;
-    }
-
-    if (offset.x > clientWidth / 4) {
-      setIndex(index - 1);
-    } else if (offset.x < -clientWidth / 4) {
-      setIndex(index + 1);
-    } else {
-      animate(x, calculateNewX(), transition);
-    }
-  };
-
-  React.useEffect(() => {
-    const controls = animate(x, calculateNewX(), transition);
-    return controls.stop;
-  }, [index]);
 
   return (
-    <motion.div ref={containerRef} style={containerStyle}>
-      {range.map((rangeValue) => {
-        return (
-          <Page
-            key={rangeValue + index}
-            x={x}
-            onDragEnd={handleEndDrag}
-            index={rangeValue + index}
-            renderPage={children}
+    <Wrapper>
+      {isLoading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Banner
+            bannerInfo={popularTvShows?.results[0] as IData}
+            detailSearchUrl={`tv/banner`}
+            requestUrl={'tv'}
           />
-        );
-      })}
-    </motion.div>
-  );
-};
-
-VirtualizedPage.displayName = 'VirtualizedPage';
-
-const images = [
-  'https://unsplash.com/photos/1527pjeb6jg/download?force=true&w=640',
-  'https://unsplash.com/photos/9wg5jCEPBsw/download?force=true&w=640',
-  'https://unsplash.com/photos/phIFdC6lA4E/download?force=true&w=640',
-];
-export default function Tv() {
-  return (
-    <div
-      className="App"
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      <div style={{ width: 640, height: 500 }}>
-        <VirtualizedPage>
-          {({ index }) => {
-            const modulo = index % images.length;
-            const imageIndex = modulo < 0 ? images.length + modulo : modulo;
-            return (
-              <img
-                draggable={false}
-                alt="Mountain"
-                style={{ width: '100%' }}
-                src={images[imageIndex]}
-              />
-            );
-          }}
-        </VirtualizedPage>
-      </div>
-    </div>
+          <SliderContainer>
+            <Slider
+              data={popularTvShows!}
+              title={'Popular Tv Shows'}
+              listType={'tvShowList'}
+              menuName="tv"
+              mediaType="tv"
+            />
+            {/* <Slider2
+              data={popularTvShows!}
+              title={'Popular Tv Shows'}
+              listType={'tvShowList'}
+              menuName="tv"
+              mediaType="tv"
+            /> */}
+          </SliderContainer>
+        </>
+      )}
+    </Wrapper>
   );
 }
+export default Home;

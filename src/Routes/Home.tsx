@@ -4,23 +4,10 @@ import { useQuery } from 'react-query';
 import { useMatch, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getMoives, IGetMoviesResult } from '../api';
-import media from '../styles/media';
 import { makeImagePath } from '../utills';
 
 const Wrapper = styled.div`
   padding-bottom: 200px;
-
-  ${media.large`
-    background-color: black;
-  `}
-
-  ${media.medium`
-    background-color: blue;
-  `}
-
-    ${media.small`
-  background-color: white;
-`}
 `;
 
 const Loader = styled.div`
@@ -36,22 +23,75 @@ const Banner = styled.div<{ bgPhoto: string }>`
   flex-direction: column;
   justify-content: center;
   padding: 60px;
+  background-repeat: no-repeat;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgPhoto});
-  background-size: cover;
+  background-size: 100%;
+  background-position: center center;
+
+  @media screen and (max-width: 1400px) {
+    height: 90%;
+  }
+
+  @media screen and (max-width: 1000px) {
+    height: 70%;
+    min-height: 400px;
+  }
+
+  @media screen and (max-width: 700px) {
+    height: 60%;
+    min-height: 400px;
+  }
+
+  @media screen and (max-width: 560px) {
+    height: 50%;
+    min-height: 400px;
+    justify-content: flex-end;
+  }
 `;
 const Title = styled.h2`
   font-size: 68px;
   margin-bottom: 10px;
+
+  @media only screen and (max-width: 1200px) {
+    font-size: 4.2rem;
+  }
+  @media only screen and (max-width: 700px) {
+    font-size: 2.6rem;
+  }
+
+  @media screen and (max-width: 560px) {
+    margin-bottom: 50px;
+  }
 `;
 const Overview = styled.p`
   font-size: 26px;
-  width: 50%;
+  width: 300px;
+
+  @media only screen and (max-width: 1200px) {
+    width: 20rem;
+    font-size: 1rem;
+    line-height: 2rem;
+  }
+
+  @media only screen and (max-width: 700px) {
+    font-size: 0.8rem;
+    line-height: 1.6rem;
+  }
+
+  @media screen and (max-width: 560px) {
+    display: none;
+  }
 `;
 
 const Slider = styled.div`
   position: relative;
-  top: -100px;
+  /* top: -100px; */
+  display: flex;
+  flex-direction: column;
+  :hover .sliderBtn {
+    opacity: 1;
+  }
 `;
 
 const Row = styled(motion.div)`
@@ -60,7 +100,12 @@ const Row = styled(motion.div)`
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
   width: 100%;
+
+  @media screen and (max-width: 560px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
+
 const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
   height: 200px;
@@ -68,7 +113,7 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   background-size: cover;
   background-position: center center;
   font-size: 64px;
-  /* position: relative; */
+  position: relative;
 
   cursor: pointer;
   &:first-child {
@@ -112,6 +157,15 @@ const BigMovie = styled(motion.div)`
   border-radius: 15px;
   overflow: hidden;
   background-color: ${(props) => props.theme.black.lighter};
+
+  @media screen and (max-width: 1000px) {
+    width: 70%;
+    height: 80vh;
+  }
+  @media screen and (max-width: 560px) {
+    width: 90vw;
+    height: 70vh;
+  }
 `;
 
 const BigCover = styled(motion.div)`
@@ -119,6 +173,11 @@ const BigCover = styled(motion.div)`
   background-size: cover;
   background-position: center center;
   height: 400px;
+
+  @media screen and (max-width: 560px) {
+    width: 100%;
+    height: 300px;
+  }
 `;
 
 const BigTitle = styled.h3`
@@ -136,15 +195,62 @@ const BigOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
 `;
 
+const SlideBtn = styled(motion.button)`
+  position: absolute;
+  top: 300%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4rem;
+  height: 4rem;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: all 0.3s;
+  z-index: 90;
+  opacity: 0;
+  cursor: pointer;
+  &:hover {
+    scale: 1.1;
+    color: #000;
+    background-color: #fff;
+  }
+  &:blur {
+    color: #fff;
+    background-color: #000;
+  }
+
+  @media only screen and (max-width: 560px) {
+    width: 5rem;
+    height: 5rem;
+    svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+`;
+
+const LeftSlideBtn = styled(SlideBtn)`
+  left: 10px;
+`;
+
+const RightSlideBtn = styled(SlideBtn)`
+  right: 10px;
+`;
 const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 5,
+  hidden: (right: boolean) => {
+    return {
+      x: right ? window.innerWidth + 5 : -window.innerWidth - 5,
+    };
   },
   visible: {
     x: 0,
   },
-  exit: {
-    x: -window.outerWidth - 5,
+  exit: (right: boolean) => {
+    return {
+      x: right ? -window.innerWidth - 5 : +window.innerWidth + 5,
+    };
   },
 };
 
@@ -153,6 +259,7 @@ const BoxVariants = {
     scale: 1,
   },
   hover: {
+    zIndex: 10,
     scale: 1.3,
     y: -50,
     transition: { delay: 0.5, type: 'tween', duration: 0.2 },
@@ -169,8 +276,6 @@ const infoVariants = {
   },
 };
 
-const offset = 6;
-
 function Home() {
   const navigate = useNavigate();
   const bigMovieMatch = useMatch('/movies/:movieId');
@@ -181,6 +286,8 @@ function Home() {
   );
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const [isRight, setIsRight] = useState(false);
+
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
@@ -188,8 +295,20 @@ function Home() {
       const totalMovies = data.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      setIsRight(() => true);
     }
   };
+  const decreaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+      setIsRight(() => false);
+    }
+  };
+
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -198,6 +317,8 @@ function Home() {
   const onOverlayClicked = () => {
     navigate(-1);
   };
+
+  const offset = 6;
 
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
@@ -211,16 +332,24 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner
-            onClick={increaseIndex}
-            bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
-          >
+          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}>
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
           <Slider>
+            <h1>LATEST</h1>
+            <LeftSlideBtn
+              onClick={increaseIndex}
+              className="sliderBtn"
+            >{`<`}</LeftSlideBtn>
+            <RightSlideBtn
+              onClick={decreaseIndex}
+              className="sliderBtn"
+            >{`>`}</RightSlideBtn>
+
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
+                custom={isRight}
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"

@@ -8,6 +8,7 @@ import {
 import { Link, useMatch, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { isMobile } from 'react-device-detect';
 const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
@@ -83,6 +84,7 @@ const Input = styled(motion.input)`
   font-size: 16px;
   background-color: transparent;
   border: 1px solid ${(props) => props.theme.white.lighter};
+  width: ${isMobile ? '120px' : ''};
 `;
 
 const UnderLine = styled(motion.span)`
@@ -147,7 +149,7 @@ function Header() {
       navAnimation.start('top');
     }
   });
-
+  const searchInputWidth = isMobile ? 90 : 180;
   return (
     <Nav variants={navVariants} initial="up" animate={navAnimation}>
       <Col>
@@ -177,7 +179,7 @@ function Header() {
         <Search onSubmit={handleSubmit(onValid)}>
           <SearchIcon
             onClick={toggleSearch}
-            animate={{ x: searchOpen ? -180 : 0 }}
+            animate={{ x: searchOpen ? -searchInputWidth : 0 }}
             transition={{ type: 'linear' }}
             fill="currentColor"
             viewBox="0 0 20 20"
