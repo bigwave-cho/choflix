@@ -1,7 +1,6 @@
-import { useQuery } from 'react-query';
-import { useLocation, useMatch, useSearchParams } from 'react-router-dom';
+import { useMatch, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { getTvs, IData, IGetTvResult } from '../api';
+import { IData } from '../api';
 import Banner from '../Components/Banner';
 import Modal from '../Components/Modal';
 import Slider from '../Components/Slider';
@@ -19,18 +18,14 @@ const Loader = styled.div`
 const SliderContainer = styled.div`
   background-color: transparent;
   position: relative;
-  top: -200px;
   @media screen and (max-width: 1000px) {
-    top: -150px;
+    top: 50px;
   }
 `;
 
 function Tv() {
   const bigMovieMatch = useMatch('/choflix/tv/tvShowList/:tvId');
-  const location = useLocation();
-
   const [searchParams] = useSearchParams();
-
   const [latestTv, popularTv, airingTv, topRatedTv] = useMultipleQueries('tv');
   const isLoading =
     latestTv.isLoading ||

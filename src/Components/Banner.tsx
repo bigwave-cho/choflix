@@ -9,8 +9,8 @@ const Wrapper = styled.div<{ bgphoto: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 70vh;
-  min-height: 80rem;
+  height: 100vh;
+  min-height: 1000px;
   padding: 6.8rem 6rem;
   background-repeat: no-repeat;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
@@ -20,23 +20,26 @@ const Wrapper = styled.div<{ bgphoto: string }>`
 
   @media screen and (max-width: 1400px) {
     height: 80%;
+    min-height: 800px;
   }
 
   @media screen and (max-width: 1200px) {
-    height: 80%;
+    height: 30%;
+    min-height: 700px;
   }
 
   @media screen and (max-width: 1000px) {
-    height: 65%;
-    min-height: 64.8rem;
+    height: 55%;
+    min-height: 600px;
+
     padding: 4.2rem 6rem;
   }
   @media screen and (max-width: 700px) {
-    min-height: 53.4rem;
+    min-height: 600px;
   }
   @media screen and (max-width: 500px) {
-    height: 50%;
-    min-height: 40.8rem;
+    height: 10%;
+    min-height: 500px;
     padding: 3.4rem 3rem;
   }
   @media screen and (min-width: 216px) {
