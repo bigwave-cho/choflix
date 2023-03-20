@@ -18,6 +18,10 @@
 
 > https://bigwave-cho.github.io/choflix/
 
+### 실행방법
+- npm i
+- npm start
+
 목차
 - [기술 스택](#기술-스택)
 - [구현 기능](#구현-기능)
